@@ -122,3 +122,7 @@ B.react('🇧🇭').then(() => B.react('🇧🇭'))
                                                 
                                     
  });
+
+
+
+client.login(process.env.BOT_TOKEN);
