@@ -9,9 +9,17 @@ const { searchIndex } = require('../src/knowledge/bm25');
 
 const FIX = path.join(__dirname, 'fixtures');
 
+const dirs = [];
+
 function tmp() {
-  return fs.mkdtempSync(path.join(os.tmpdir(), 'servia-ingest-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'servia-ingest-'));
+  dirs.push(dir);
+  return dir;
 }
+
+test.after(() => {
+  for (const dir of dirs) fs.rmSync(dir, { recursive: true, force: true });
+});
 
 test('ingestFolder indexes PDFs, ignores other files, and loadIndex is searchable', async () => {
   const dir = tmp();
@@ -48,7 +56,8 @@ test('blank (scanned-like) page is reported in emptyPages and does not throw', a
   fs.copyFileSync(path.join(FIX, 'blank-page.pdf'), path.join(dir, 'blank-page.pdf'));
   const out = path.join(dir, 'index.json');
   const warn = console.warn;
-  console.warn = () => {};
+  const warnings = [];
+  console.warn = (...args) => warnings.push(args.join(' '));
   let res;
   try {
     res = await ingestFolder(dir, out);
@@ -57,4 +66,8 @@ test('blank (scanned-like) page is reported in emptyPages and does not throw', a
   }
   assert.strictEqual(res.documents, 1);
   assert.deepStrictEqual(res.emptyPages, [{ docName: 'blank-page', page: 1 }]);
+  assert.ok(
+    warnings.some((m) => m.includes('blank-page') && /page\s*1\b/i.test(m)),
+    `expected a warning mentioning blank-page and page 1, got: ${JSON.stringify(warnings)}`
+  );
 });
