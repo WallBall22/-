@@ -15,6 +15,13 @@
       "when": 1793209806195,
       "tag": "0001_seed_channels",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793210504944,
+      "tag": "0002_message_ai_outcome",
+      "breakpoints": true
     }
   ]
 }

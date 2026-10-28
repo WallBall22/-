@@ -110,6 +110,10 @@ export const messages = pgTable(
       .notNull()
       .default(sql`'{}'::text[]`),
     aiModel: text('ai_model'),
+    /** How the reply was produced: answered, guarded, model_error, handoff_requested, … (outbound only). */
+    aiOutcome: text('ai_outcome'),
+    /** Why the reply is a fallback: a guard violation or model error kind (outbound only). */
+    aiErrorCode: text('ai_error_code'),
     inputTokens: integer('input_tokens'),
     outputTokens: integer('output_tokens'),
     errorCode: text('error_code'),
