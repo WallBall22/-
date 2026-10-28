@@ -1,0 +1,34 @@
+# Local development stack. Production uses the Dockerfile with a managed PostgreSQL (see docs/DEPLOYMENT.md).
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: servia
+      POSTGRES_PASSWORD: servia
+      POSTGRES_DB: servia
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/init-test-db.sql:/docker-entrypoint-initdb.d/init-test-db.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U servia -d servia"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  # Optional: run the app in a container too (`docker compose --profile app up --build`).
+  app:
+    profiles: ["app"]
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://servia:servia@db:5432/servia
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:

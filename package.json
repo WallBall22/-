@@ -4,15 +4,9 @@
 	"description": "A Discord bot!",
 	"main": "bot.js",
 	"scripts": {
-		"test": "node --test test/*.test.js",
-		"ingest": "node scripts/ingest.js",
-		"ask": "node scripts/ask.js"
+		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"keywords": [],
 	"author": "",
-	"license": "ISC",
-	"dependencies": {
-		"@anthropic-ai/sdk": "^1.3.0",
-		"pdf-parse": "^2.4.5"
-	}
+	"license": "ISC"
 }
