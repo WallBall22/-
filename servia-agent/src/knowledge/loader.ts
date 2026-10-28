@@ -19,6 +19,9 @@ export interface LoadResult {
 
 const SUPPORTED = new Set(['.md', '.pdf']);
 
+/** Bump when parsing or normalization changes, so unchanged files are re-indexed on the next reload. */
+export const KNOWLEDGE_FORMAT_VERSION = '3';
+
 /** `07-pricing-and-commercial-policies.md` → `pricing-and-commercial-policies`. */
 export function slugFromFilename(file: string): string {
   return basename(file, extname(file))
@@ -67,7 +70,7 @@ export async function loadKnowledgeDirectory(dir: string): Promise<LoadResult> {
     }
     seen.add(slug);
     const buffer = await readFile(path);
-    const contentHash = createHash('sha256').update(buffer).digest('hex');
+    const contentHash = createHash('sha256').update(`v${KNOWLEDGE_FORMAT_VERSION}\0`).update(buffer).digest('hex');
 
     if (extname(file).toLowerCase() === '.md') {
       const parsed = parseMarkdown(buffer.toString('utf8'), slug);

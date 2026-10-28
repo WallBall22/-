@@ -1,6 +1,26 @@
 export interface KnowledgeSection {
   heading: string;
   content: string;
+  /** Search-only terms from `Keywords:` lines: indexed, never shown to the model or the customer. */
+  keywords?: string;
+}
+
+const KEYWORDS_LINE = /^\s*(?:keywords|كلمات مفتاحية)\s*[:：]\s*(.*)$/i;
+
+/** Moves `Keywords: …` lines out of the visible content. */
+function extractKeywords(section: KnowledgeSection): KnowledgeSection {
+  const keywords: string[] = [];
+  const content = section.content
+    .split('\n')
+    .filter((line) => {
+      const match = KEYWORDS_LINE.exec(line);
+      if (match) keywords.push(match[1]!);
+      return !match;
+    })
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+  return keywords.length ? { heading: section.heading, content, keywords: keywords.join(' ') } : section;
 }
 
 export interface ParsedDocument {
@@ -51,7 +71,7 @@ export function parseMarkdown(markdown: string, fallbackTitle: string): ParsedDo
   }
   flush();
 
-  return { title, sections: raw.flatMap(splitLongSection) };
+  return { title, sections: raw.map(extractKeywords).flatMap(splitLongSection) };
 }
 
 /** Splits plain text (e.g. one PDF page) into passages under a fixed heading. */
@@ -75,7 +95,7 @@ function splitLongSection(section: KnowledgeSection): KnowledgeSection[] {
     }
   }
   if (current) parts.push(current);
-  return parts.map((content) => ({ heading: section.heading, content: content.trim() }));
+  return parts.map((content) => ({ ...section, content: content.trim() }));
 }
 
 function hardSplit(text: string): string[] {

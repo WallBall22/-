@@ -6,11 +6,17 @@ No. SERVIA is an AI automation agency for clinics. This assistant does not give 
 
 لا. سيرفيا وكالة أتمتة بالذكاء الاصطناعي للعيادات، وليست جهة طبية. هذا المساعد لا يقدم أي نصائح طبية.
 
+Keywords: medical, medicine, medication, treatment, diagnosis, symptoms, pain, doctor, health
+كلمات مفتاحية: طبي، دواء، علاج، تشخيص، أعراض، ألم، دكتور، طبيب
+
 ## Does SERVIA guarantee results?
 
 SERVIA does not promise guaranteed results. Outcomes depend on each clinic's situation.
 
 سيرفيا لا تعد بنتائج مضمونة. النتائج تعتمد على وضع كل عيادة.
+
+Keywords: guarantee, guaranteed, promise, results, ROI, more patients, increase
+كلمات مفتاحية: ضمان، مضمون، نتائج، وعد، زيادة المرضى
 
 ## Can this chat assistant book a meeting or a call with SERVIA?
 

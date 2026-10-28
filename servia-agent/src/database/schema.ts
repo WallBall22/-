@@ -186,10 +186,14 @@ export const knowledgeChunks = pgTable(
     chunkIndex: integer('chunk_index').notNull(),
     heading: text('heading').notNull(),
     content: text('content').notNull(),
+    /** Normalized title + heading + keywords: weighted above body text in ranking. */
+    normalizedHeading: text('normalized_heading').notNull().default(''),
     normalizedContent: text('normalized_content').notNull(),
     searchVector: tsvector('search_vector')
       .notNull()
-      .generatedAlwaysAs(sql`to_tsvector('simple'::regconfig, normalized_content)`),
+      .generatedAlwaysAs(
+        sql`setweight(to_tsvector('simple'::regconfig, normalized_heading), 'A') || setweight(to_tsvector('simple'::regconfig, normalized_content), 'B')`,
+      ),
     createdAt: createdAt(),
   },
   (t) => [

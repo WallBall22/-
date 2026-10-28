@@ -8,6 +8,8 @@ after understanding the clinic's needs.
 
 Keywords: price, prices, pricing, cost, how much, packages, plans, subscription, fees.
 
+Keywords: monthly, per month, yearly, annual, fee, budget, quote, invoice.
+
 غير مؤكد: أسعار وباقات سيرفيا غير منشورة في هذه المعلومات. المساعد لا يذكر أي سعر أو تقدير أو خصم.
 فريق سيرفيا يوضح الأسعار بعد فهم احتياجات العيادة.
 

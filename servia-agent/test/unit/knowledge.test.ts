@@ -73,6 +73,11 @@ describe('markdown chunking', () => {
     }
   });
 
+  it('indexes Keywords lines without showing them', () => {
+    const doc = parseMarkdown('# P\n\n## Prices\n\nNot published.\n\nKeywords: price, cost\nكلمات مفتاحية: السعر، بكام', 'f');
+    expect(doc.sections).toEqual([{ heading: 'Prices', content: 'Not published.', keywords: 'price, cost السعر، بكام' }]);
+  });
+
   it('stripOwnerNotes keeps ordinary quotes', () => {
     expect(stripOwnerNotes('> a customer quote\n> OWNER: hidden')).toBe('> a customer quote');
   });

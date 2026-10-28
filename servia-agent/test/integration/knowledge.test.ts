@@ -50,9 +50,12 @@ describe('full-text retrieval over the shipped SERVIA knowledge base', () => {
     expect(await search.search('weather forecast tomorrow in Paris', opts)).toEqual([]);
   });
 
-  it('never returns owner notes', async () => {
+  it('never returns owner notes or keyword lines', async () => {
     const all = await handle.db.execute<{ content: string }>(sql`SELECT content FROM knowledge_chunks`);
-    for (const row of all.rows) expect(row.content).not.toMatch(/OWNER TODO/);
+    for (const row of all.rows) {
+      expect(row.content).not.toMatch(/OWNER TODO/);
+      expect(row.content).not.toMatch(/Keywords:|كلمات مفتاحية/);
+    }
   });
 
   it('respects topK and the rank threshold', async () => {

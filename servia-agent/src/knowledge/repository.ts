@@ -116,8 +116,9 @@ export async function replaceKnowledge(db: Database, documents: LoadedDocument[]
             chunkIndex: i,
             heading: s.heading,
             content: s.content,
-            // The heading and document title are indexed too, so "pricing" finds the pricing section.
-            normalizedContent: normalizeForIndex(`${doc.title} ${s.heading} ${s.content}`),
+            // Title, heading and keywords rank above body text, so "pricing" finds the pricing section first.
+            normalizedHeading: normalizeForIndex(`${doc.title} ${s.heading} ${s.keywords ?? ''}`),
+            normalizedContent: normalizeForIndex(s.content),
           })),
         );
       }
