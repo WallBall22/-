@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import rateLimit from '@fastify/rate-limit';
 import { sql } from 'drizzle-orm';
-import Fastify, { type FastifyBaseLogger, type FastifyError, type FastifyInstance } from 'fastify';
+import Fastify, { LogController, type FastifyBaseLogger, type FastifyError, type FastifyInstance } from 'fastify';
 import type { Services } from '../container.js';
 import { pingDatabase } from '../database/client.js';
 import { registerWebhookRoutes } from '../webhooks/routes.js';
@@ -21,7 +21,7 @@ export async function buildApp(services: Services): Promise<FastifyInstance> {
   const app = Fastify({
     loggerInstance: logger as FastifyBaseLogger,
     // Fastify's default request log includes the query string, which carries hub.verify_token. We log our own.
-    disableRequestLogging: true,
+    logController: new LogController({ disableRequestLogging: true }),
     bodyLimit: config.http.bodyLimit,
     trustProxy: config.trustProxy,
     requestIdHeader: 'x-request-id',

@@ -35,10 +35,16 @@ describe('migrations from a clean database', () => {
       INSERT INTO knowledge_chunks (id, document_id, chunk_index, heading, content, normalized_content)
       VALUES ('t#0', ${docId}, 0, 'h', 'raw', 'clinic receptionist')
     `);
+    // Scoped to this document: other suites may have loaded the shipped knowledge base.
     const hit = await handle.db.execute<{ id: string }>(sql`
-      SELECT id FROM knowledge_chunks WHERE search_vector @@ to_tsquery('simple', 'receptionist')
+      SELECT id FROM knowledge_chunks
+      WHERE document_id = ${docId} AND search_vector @@ to_tsquery('simple', 'receptionist')
     `);
     expect(hit.rows).toEqual([{ id: 't#0' }]);
+    const miss = await handle.db.execute<{ id: string }>(sql`
+      SELECT id FROM knowledge_chunks WHERE document_id = ${docId} AND search_vector @@ to_tsquery('simple', 'pricing')
+    `);
+    expect(miss.rows).toEqual([]);
     await handle.db.execute(sql`DELETE FROM knowledge_documents WHERE slug = 't'`);
   });
 });
