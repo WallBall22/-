@@ -44,7 +44,11 @@ const envSchema = z.object({
   ADMIN_API_TOKEN: optionalSecret,
   SIMULATOR_ENABLED: bool(false),
 
+  RUN_MIGRATIONS_ON_START: bool(true),
+  KNOWLEDGE_RELOAD_ON_START: bool(true),
+
   WORKER_ENABLED: bool(true),
+  WORKER_CONCURRENCY: int(2, 1, 16),
   WORKER_POLL_INTERVAL_MS: int(1_000, 50, 60_000),
   JOB_MAX_ATTEMPTS: int(5, 1, 20),
   JOB_BACKOFF_BASE_MS: int(2_000, 10, 600_000),
@@ -108,8 +112,10 @@ export interface AppConfig {
     retentionDays: number;
   };
   admin: { token?: string; simulatorEnabled: boolean };
+  startup: { runMigrations: boolean; reloadKnowledge: boolean };
   worker: {
     enabled: boolean;
+    concurrency: number;
     pollIntervalMs: number;
     maxAttempts: number;
     backoffBaseMs: number;
@@ -199,8 +205,10 @@ export function loadConfig(source: NodeJS.ProcessEnv = process.env): AppConfig {
       retentionDays: e.RETENTION_DAYS,
     },
     admin: { token: e.ADMIN_API_TOKEN, simulatorEnabled: e.SIMULATOR_ENABLED },
+    startup: { runMigrations: e.RUN_MIGRATIONS_ON_START, reloadKnowledge: e.KNOWLEDGE_RELOAD_ON_START },
     worker: {
       enabled: e.WORKER_ENABLED,
+      concurrency: e.WORKER_CONCURRENCY,
       pollIntervalMs: e.WORKER_POLL_INTERVAL_MS,
       maxAttempts: e.JOB_MAX_ATTEMPTS,
       backoffBaseMs: e.JOB_BACKOFF_BASE_MS,
